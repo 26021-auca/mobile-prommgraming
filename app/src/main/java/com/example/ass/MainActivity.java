@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 stopService(new Intent(MainActivity.this, MyBackgroundService.class));
-                // commit 3
+                // commit 4
             }
         });
     }
