@@ -1,50 +1,38 @@
 package com.example.quiz_four;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ListView;
-
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+/**
+ * Activity for displaying a list of customers.
+ */
 public class CustomerListActivity extends AppCompatActivity {
 
-    private ListView lvCustomers;
-    private FloatingActionButton fabAdd;
+    private RecyclerView recyclerView;
+    private CustomerAdapter customerAdapter;
+    private List<Customer> customerList;
     private DatabaseHelper dbHelper;
-    private CustomerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer_list);
 
+        // Initialize database helper
         dbHelper = new DatabaseHelper(this);
-        lvCustomers = findViewById(R.id.lv_customers);
-        fabAdd = findViewById(R.id.fab_add);
-//
-        fabAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(CustomerListActivity.this, CustomerActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
+        // Load all customers from the database
+        customerList = dbHelper.getAllCustomers();
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadCustomers();
-    }
-//
-    private void loadCustomers() {
-        List<Customer> customers = dbHelper.getAllCustomers();
-        adapter = new CustomerAdapter(this, customers, dbHelper);
-        lvCustomers.setAdapter(adapter);
+        // Set up the RecyclerView
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // Initialize and set the adapter for the RecyclerView
+        customerAdapter = new CustomerAdapter(this, customerList);
+        recyclerView.setAdapter(customerAdapter);
     }
 }
