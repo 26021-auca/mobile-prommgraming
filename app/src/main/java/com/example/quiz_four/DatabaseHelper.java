@@ -16,11 +16,16 @@ import java.util.List;
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+    // Database name constant
     private static final String DATABASE_NAME = "CustomerDB";
+    // Database version constant
     private static final int DATABASE_VERSION = 1;
 
+    // Table name for customers
     private static final String TABLE_CUSTOMERS = "customers";
+    // Column for customer ID
     private static final String COLUMN_ID = "id";
+    // Column for customer full names
     private static final String COLUMN_NAMES = "full_names";
     private static final String COLUMN_GENDER = "gender";
     private static final String COLUMN_BIRTHDATE = "birth_date";
@@ -33,6 +38,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // Constructing the SQL statement for table creation
         String CREATE_CUSTOMERS_TABLE = "CREATE TABLE " + TABLE_CUSTOMERS + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_NAMES + " TEXT,"
@@ -40,12 +46,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_BIRTHDATE + " INTEGER,"
                 + COLUMN_NATIONALITY + " TEXT,"
                 + COLUMN_NID + " TEXT" + ")";
+        // Executing the table creation SQL
         db.execSQL(CREATE_CUSTOMERS_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // Dropping the old table if it exists
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CUSTOMERS);
+        // Re-creating the table on database upgrade
         onCreate(db);
     }
 
@@ -56,6 +65,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public long addCustomer(Customer customer) {
         SQLiteDatabase db = this.getWritableDatabase();
+        // Creating ContentValues to store data for insertion
         ContentValues values = new ContentValues();
         values.put(COLUMN_NAMES, customer.getFullNames());
         values.put(COLUMN_GENDER, customer.getGender());
@@ -63,6 +73,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_NATIONALITY, customer.getNationality());
         values.put(COLUMN_NID, customer.getCustomerNID());
 
+        // Performing the insert operation
         long id = db.insert(TABLE_CUSTOMERS, null, values);
         db.close();
         return id;
@@ -74,9 +85,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public List<Customer> getAllCustomers() {
         List<Customer> customerList = new ArrayList<>();
+        // Query to select all records from the table
         String selectQuery = "SELECT * FROM " + TABLE_CUSTOMERS;
 
         SQLiteDatabase db = this.getWritableDatabase();
+        // Fetching all records using a cursor
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
@@ -110,6 +123,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_NATIONALITY, customer.getNationality());
         values.put(COLUMN_NID, customer.getCustomerNID());
 
+        // Executing the update query
         return db.update(TABLE_CUSTOMERS, values, COLUMN_ID + " = ?",
                 new String[]{String.valueOf(customer.getCustomerID())});
     }
@@ -120,6 +134,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public void deleteCustomer(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
+        // Executing the delete operation based on the ID
         db.delete(TABLE_CUSTOMERS, COLUMN_ID + " = ?",
                 new String[]{String.valueOf(id)});
         db.close();
@@ -132,6 +147,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
      */
     public Customer getCustomer(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
+        // Querying a single record from the database
         Cursor cursor = db.query(TABLE_CUSTOMERS, new String[]{COLUMN_ID, COLUMN_NAMES, COLUMN_GENDER, COLUMN_BIRTHDATE, COLUMN_NATIONALITY, COLUMN_NID},
                 COLUMN_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
 
