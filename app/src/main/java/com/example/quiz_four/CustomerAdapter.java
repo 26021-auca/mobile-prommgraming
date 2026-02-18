@@ -65,6 +65,7 @@ public class CustomerAdapter extends ArrayAdapter<Customer> {
         });
 
         return listItem;
+        // return listitem
     }
 
     private int getAge(Date dateOfBirth) {

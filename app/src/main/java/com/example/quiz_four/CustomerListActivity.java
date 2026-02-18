@@ -26,7 +26,7 @@ public class CustomerListActivity extends AppCompatActivity {
         dbHelper = new DatabaseHelper(this);
         lvCustomers = findViewById(R.id.lv_customers);
         fabAdd = findViewById(R.id.fab_add);
-
+//
         fabAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,7 +41,7 @@ public class CustomerListActivity extends AppCompatActivity {
         super.onResume();
         loadCustomers();
     }
-
+//
     private void loadCustomers() {
         List<Customer> customers = dbHelper.getAllCustomers();
         adapter = new CustomerAdapter(this, customers, dbHelper);
