@@ -9,7 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-// Helper
+
+/**
+ * Database helper class for managing customer data.
+ * Handles creation, upgrade, and CRUD operations for the customers table.
+ */
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "CustomerDB";
@@ -33,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_NAMES + " TEXT,"
                 + COLUMN_GENDER + " TEXT,"
-                + COLUMN_BIRTHDATE + " INTEGER," // Store date as long (timestamp)
+                + COLUMN_BIRTHDATE + " INTEGER,"
                 + COLUMN_NATIONALITY + " TEXT,"
                 + COLUMN_NID + " TEXT" + ")";
         db.execSQL(CREATE_CUSTOMERS_TABLE);
@@ -45,6 +49,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /**
+     * Adds a new customer to the database.
+     * @param customer The customer object to add.
+     * @return The ID of the newly inserted row.
+     */
     public long addCustomer(Customer customer) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -59,6 +68,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return id;
     }
 
+    /**
+     * Retrieves all customers from the database.
+     * @return A list of all customer objects.
+     */
     public List<Customer> getAllCustomers() {
         List<Customer> customerList = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_CUSTOMERS;
@@ -83,6 +96,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return customerList;
     }
 
+    /**
+     * Updates an existing customer in the database.
+     * @param customer The customer object with updated information.
+     * @return The number of rows affected.
+     */
     public int updateCustomer(Customer customer) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -96,6 +114,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 new String[]{String.valueOf(customer.getCustomerID())});
     }
 
+    /**
+     * Deletes a customer from the database.
+     * @param id The ID of the customer to delete.
+     */
     public void deleteCustomer(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_CUSTOMERS, COLUMN_ID + " = ?",
@@ -103,22 +125,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
     }
 
+    /**
+     * Retrieves a single customer by their ID.
+     * @param id The ID of the customer to retrieve.
+     * @return The customer object, or null if not found.
+     */
     public Customer getCustomer(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_CUSTOMERS, new String[]{COLUMN_ID, COLUMN_NAMES, COLUMN_GENDER, COLUMN_BIRTHDATE, COLUMN_NATIONALITY, COLUMN_NID},
                 COLUMN_ID + "=?", new String[]{String.valueOf(id)}, null, null, null, null);
 
-        if (cursor != null)
-            cursor.moveToFirst();
+        Customer customer = null;
+        if (cursor != null && cursor.moveToFirst()) {
+            customer = new Customer();
+            customer.setCustomerID(cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)));
+            customer.setFullNames(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NAMES)));
+            customer.setGender(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_GENDER)));
+            customer.setBirthDate(new Date(cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_BIRTHDATE))));
+            customer.setNationality(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NATIONALITY)));
+            customer.setCustomerNID(cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NID)));
+        }
+        
+        if(cursor != null) {
+            cursor.close();
+        }
+        db.close();
 
-        Customer customer = new Customer();
-        customer.setCustomerID(cursor.getInt(0));
-        customer.setFullNames(cursor.getString(1));
-        customer.setGender(cursor.getString(2));
-        customer.setBirthDate(new Date(cursor.getLong(3)));
-        customer.setNationality(cursor.getString(4));
-        customer.setCustomerNID(cursor.getString(5));
-        cursor.close();
         return customer;
     }
 }
