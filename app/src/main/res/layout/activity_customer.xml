@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/et_full_names"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Full Names" />
+
+    <EditText
+        android:id="@+id/et_gender"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Gender" />
+
+    <EditText
+        android:id="@+id/et_birth_date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Birth Date (yyyy-mm-dd)" />
+
+    <EditText
+        android:id="@+id/et_nationality"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nationality" />
+
+    <EditText
+        android:id="@+id/et_customer_nid"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Customer NID/Passport" />
+
+    <Button
+        android:id="@+id/btn_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save" />
+
+</LinearLayout>
